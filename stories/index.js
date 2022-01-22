@@ -1,7 +1,10 @@
-import React from "react";
+import React, { Fragment }from "react";
+
 import { storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
+
 import "index.scss";
+
 // importing the files :
 import Button from "components/Button";
 import DayListItem from "components/DayListItem";
@@ -16,6 +19,7 @@ import Show from "components/Appointment/Show"
 import Confirm from "components/Appointment/Confirm"
 import Status from "components/Appointment/Status"
 import Error from "components/Appointment/Error"
+import Form from "components/Appointment/Form"
 
 
 storiesOf("Button", module)
@@ -107,7 +111,7 @@ storiesOf("InterviewerListItem", module)
       id={interviewer.id}
       name={interviewer.name}
       avatar={interviewer.avatar}
-      setInterviewer={action("setInterviewer")(interviewer.id)}
+      setInterviewer={action("setInterviewer")(interviewer)}
     />
   ));
 
@@ -149,27 +153,61 @@ storiesOf("InterviewerList", module)
   .add("Appointment with Time", () => <Appointment time="12pm" />)
   .add("Header", () => <Header time="12pm" />)
   .add("Empty", () => <Empty onAdd={action("onAdd")} />)
-          .add("Show", () => (
-            <Show 
-              student="Lydia Miller-Jone" 
-              interviewer={interviewer} 
-              onEdit={action("onEdit")} 
-              onDelete = {action("onDelete")} />))
-          .add("Confirm", () => (
-            <Confirm
-              message="Delete the appointment?"
-              onConfirm={action("onConfirm")}
-              onCancel={action("onCancel")}
+  .add("Show", () => (
+      <Show 
+        student="Lydia Miller-Jone" 
+        interviewer={interviewer} 
+        onEdit={action("onEdit")} 
+        onDelete = {action("onDelete")} />))
+  .add("Confirm", () => (
+      <Confirm
+        message="Delete the appointment?"
+        onConfirm={action("onConfirm")}
+        onCancel={action("onCancel")}
             />))
-          .add("Status", () => (
-            <Status 
-              message="Deleting"
+  .add("Status", () => (
+      <Status 
+        message="Deleting"
             />
             ))
 
-          .add("Error", () => (
-          <Error
-            message="Could not delete appointment."
-            onClose={action("onClose")}
+  .add("Error", () => (
+      <Error
+        message="Could not delete appointment."
+        onClose={action("onClose")}
           />
           )) 
+  .add("Create", () => (
+      <Form
+        interviewers={interviewers}
+        onSave={action("onSave")}
+        onCancel={action("onCancel")}
+            />
+            ))
+    
+  .add("Edit", () => (
+      <Form
+          name="Name of Interviewer"
+          interviewers={interviewers}
+          interviewer={3}
+          onSave={action("onSave")}
+          onCancel={action("onCancel")}
+            />
+            ))
+    
+  .add("Appointment Empty", () => (
+      <Fragment>
+      <Appointment id={1} time="4pm" />
+      <Appointment id="last" time="5pm" />
+      </Fragment>
+            ))
+  .add("Appointment Booked", () => (
+      <Fragment>
+      <Appointment
+        id={1}
+        time="4pm"
+        interview={{ student: "Lydia Miller-Jones", interviewers }}
+      />
+        <Appointment id="last" time="5pm" />
+        </Fragment>
+            ))

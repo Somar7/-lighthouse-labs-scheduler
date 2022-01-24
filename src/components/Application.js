@@ -18,6 +18,7 @@ export default function Application(props) {
   const setDay = day => setState({ ...state, day });
   const dailyAppointments = getAppointmentsForDay(state, state.day);
 
+
   
   useEffect(()=>{
     axios.get('http://localhost:8001/api/days')

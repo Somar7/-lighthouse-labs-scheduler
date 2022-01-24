@@ -19,14 +19,16 @@ export function getInterview(state, interview) {
 }
 }
 
-export function getInterviewsForDay(state, day) {
-  const filteredAppointments = [];
+export function getInterviewersForDay(state, day) {
+  const filteredInterviewers = [];
   state.days.forEach(element => {
     if (element.name === day) {
+      if (!day || !element.interviewers || !state)
+      return [];
       element.interviewers.forEach(id => {
-        filteredAppointments.push(state.interviewers[id]);
+        filteredInterviewers.push(state.interviewers[id]);
       });
     }
   });
-  return filteredAppointments;
+  return filteredInterviewers;
 } 

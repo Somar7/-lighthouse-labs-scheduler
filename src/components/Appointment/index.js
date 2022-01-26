@@ -7,6 +7,8 @@ import useVisualMode from "hooks/useVisualMode";
 import Form from './Form';
 import Status from "components/Appointment/Status";
 import Confirm from 'components/Appointment/Confirm';
+// import { TRUE } from 'node-sass';
+import Error from 'components/Appointment/Empty'
 
 export default function Appointment(props) {
   console.log("index test", props.student)
@@ -17,6 +19,8 @@ export default function Appointment(props) {
   const DELETING = "DELETING";
   const CONFIRM = "CONFIRM";
   const EDIT = "EDIT";
+  const ERROR_SAVE = "ERROR_SAVE";
+  const ERROR_DELETE = "ERROR_DELETE";
 
   const { mode, transition, back } = useVisualMode(
     props.interview ? SHOW : EMPTY
@@ -29,9 +33,9 @@ export default function Appointment(props) {
     };
     
     transition(SAVING);
-    props.bookInterview(props.id, interview).then(() => {
-      transition(SHOW);
-    })
+    props.bookInterview(props.id, interview).then(() => 
+      transition(SHOW))
+      .catch((error) => transition(ERROR_SAVE, true))
   }
 
   const cancel = () => {
@@ -41,9 +45,9 @@ export default function Appointment(props) {
   function confirmDelete() {
     transition(DELETING);
     props.cancelInterview(props.id)
-      .then(() => {
-        transition(EMPTY)
-      })
+      .then(() => 
+        transition(EMPTY))
+        .catch((error) => transition(ERROR_DELETE, true))
   }
 
   return (
@@ -63,6 +67,11 @@ export default function Appointment(props) {
     {mode === DELETING && <Status message = "Deleting" />}
     {mode === CONFIRM && <Confirm message = "Are you sure you want to delete this appointment?" onConfirm = {confirmDelete} onCancel = {() => transition(SHOW)} />}
     {mode === EDIT && <Form student={props.interview.student} interviewer={props.interview.interviewer.id} interviewers={props.interviewers} onSave={save} onCancel = {() => transition(SHOW)} />}
+    {mode === ERROR_DELETE && <Error message = "stupid error" onClose={() => back()} ></Error>}
+    {mode === ERROR_SAVE && <Error message = "stupid error" onClose={() => back()} ></Error>}
+
+
+
   </article>
   );
 }

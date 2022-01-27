@@ -25,15 +25,18 @@ import {useState, useEffect} from "react";
        });
      }, [])
 
+    //  const updateSpots = ()=> {
+
+    //  }
 
  function bookInterview(id, interview) {
 
-   // const spotsLeft = state.days.forEach(day => {
-   //   if (day.name ===state.day) {
-   //     day.spots--;
-   //   }
-   //   return day;
-   //  })
+   const spotsLeft = state.days.map(day => {
+     if (day.name ===state.day) {
+       day.spots--;
+     }
+     return day;
+    })
 
    const appointment = {
      ...state.appointments[id],
@@ -46,20 +49,21 @@ import {useState, useEffect} from "react";
 
 
 
-   return (axios.put(`http://localhost:8001/api/appointments/${id}`, appointment).then(setState({
+   return axios.put(`http://localhost:8001/api/appointments/${id}`, appointment).then(setState({
      ...state,
-     appointments
-   })));
+     appointments,
+     days: spotsLeft
+   }));
  };
 
  function cancelInterview(id) {
 
-   // const spotsLeft = state.days.forEach(day => {
-   //   if (day.name ===state.day) {
-   //     day.spots--;
-   //   }
-   //   return day;
-   //  })
+   const spotsLeft = state.days.map(day => {
+     if (day.name ===state.day) {
+       day.spots++;
+     }
+     return day;
+    })
 
    const appointment = {
      ...state.appointments[id],
@@ -70,10 +74,13 @@ import {useState, useEffect} from "react";
      [id]: appointment
    }
 
-   return (axios.delete(`http://localhost:8001/api/appointments/${id}`, appointment).then(setState({
+   return axios.delete(`http://localhost:8001/api/appointments/${id}`, appointment).then(()=> {
+   console.log("We made it here")  
+   setState({
      ...state,
-     appointments
-   })));
+     appointments,
+     days: spotsLeft
+   })});
  }
 
  return { state, setDay, bookInterview, cancelInterview}

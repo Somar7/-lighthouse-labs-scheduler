@@ -25,18 +25,14 @@ import {useState, useEffect} from "react";
        });
      }, [])
 
-    //  const updateSpots = ()=> {
-
-    //  }
+     const updateSpots = (day, appointments) =>
+     day.appointments.length -
+     day.appointments.reduce(
+       (count, id) => (appointments[id].interview ? count + 1 : count), 0
+     );
+ 
 
  function bookInterview(id, interview) {
-
-   const spotsLeft = state.days.map(day => {
-     if (day.name ===state.day) {
-       day.spots--;
-     }
-     return day;
-    })
 
    const appointment = {
      ...state.appointments[id],
@@ -46,24 +42,28 @@ import {useState, useEffect} from "react";
      ...state.appointments,
      [id]: appointment
    }
-
-
+   const days = state.days.map(day => {
+    if (day.appointments.includes(id)) {
+      return { ...day, spots: updateSpots(day, appointments) }
+    }
+    return day;
+  })
 
    return axios.put(`http://localhost:8001/api/appointments/${id}`, appointment).then(setState({
      ...state,
      appointments,
-     days: spotsLeft
+     days
    }));
  };
 
  function cancelInterview(id) {
 
-   const spotsLeft = state.days.map(day => {
-     if (day.name ===state.day) {
-       day.spots++;
-     }
-     return day;
-    })
+  const days = state.days.map(day => {
+    if (day.appointments.includes(id)) {
+      return { ...day, spots: updateSpots(day, appointments) }
+    }
+    return day;
+  })
 
    const appointment = {
      ...state.appointments[id],
@@ -79,7 +79,7 @@ import {useState, useEffect} from "react";
    setState({
      ...state,
      appointments,
-     days: spotsLeft
+     days
    })});
  }
 
